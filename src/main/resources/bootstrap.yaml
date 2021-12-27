@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: academy
+  data:
+    mongodb:
+      database: academy
+      uri: mongodb://localhost:27017

@@ -1,0 +1,60 @@
+package com.nttdata.academy.services;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nttdata.academy.model.dao.ChapterDao;
+import com.nttdata.academy.model.entity.Chapter;
+import com.nttdata.academy.repositories.ChapterRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.time.LocalDateTime;
+
+@Service
+public class ChapterService implements IOpereationServices<Chapter> {
+
+    @Autowired
+    private ChapterRepository repository;
+
+    @Autowired
+    private ObjectMapper mapper;
+
+    @Override
+    public Flux<Chapter> findAll() {
+        return this.repository.findAll().map(this::toChapter);
+    }
+
+    @Override
+    public Mono<Chapter> findById(String id) {
+        return this.repository.findById(id).map(this::toChapter);
+    }
+
+    @Override
+    public Mono<Chapter> save(Chapter chapter) {
+        chapter.setCreateAt(LocalDateTime.now());
+        return this.repository.save(this.toChapterDao(chapter)).map(this::toChapter);
+    }
+
+    @Override
+    public Mono<Chapter> update(String id, Chapter chapter) {
+        chapter.setId(id);
+        chapter.setCreateAt(LocalDateTime.now());
+        return this.repository.save(this.toChapterDao(chapter)).map(this::toChapter);
+    }
+
+    @Override
+    public Mono<Void> delete(String id) {
+        return this.repository.deleteById(id);
+    }
+
+    public Chapter toChapter(ChapterDao chapterDao) {
+        return this.mapper.convertValue(chapterDao, Chapter.class);
+    }
+
+    public ChapterDao toChapterDao(Chapter chapter) {
+        return this.mapper.convertValue(chapter, ChapterDao.class);
+    }
+
+
+}
