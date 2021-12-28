@@ -1,8 +1,20 @@
 package com.nttdata.academy.router;
 
 import com.nttdata.academy.handler.StudenHandler;
+import com.nttdata.academy.model.entity.Student;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.springdoc.core.annotations.RouterOperation;
+import org.springdoc.core.annotations.RouterOperations;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.reactive.function.server.RequestPredicates;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
@@ -13,7 +25,84 @@ public class StudentRouter {
     String uri = "api/v1/student";
 
     @Bean
-    public RouterFunction<ServerResponse> studentRoutes (StudenHandler handler){
+    @RouterOperations({
+            @RouterOperation(
+                    path = "/api/v1/student",
+                    produces = {
+                            MediaType.APPLICATION_JSON_VALUE
+                    },
+                    method = RequestMethod.GET,
+                    beanClass = StudenHandler.class,
+                    beanMethod = "findAll",
+                    operation = @Operation(
+                            operationId = "findAll",
+                            responses = {
+                                    @ApiResponse(
+                                            responseCode = "200",
+                                            description = "successful",
+                                            content = @Content(schema = @Schema(
+                                                    implementation = Student.class
+                                            ))
+                                    )
+                            }
+                    )
+            ),
+            @RouterOperation(
+                    path = "/api/v1/student/{id}",
+                    produces = {
+                            MediaType.APPLICATION_JSON_VALUE
+                    },
+                    method = RequestMethod.GET,
+                    beanClass = StudenHandler.class,
+                    beanMethod = "findById",
+                    operation = @Operation(
+                            operationId = "findById",
+                            responses = {
+                                    @ApiResponse(
+                                            responseCode = "200",
+                                            description = "successful",
+                                            content = @Content(schema = @Schema(
+                                                    implementation = Student.class
+                                            ))
+                                    ),
+                                    @ApiResponse(responseCode = "404", description = "customer not found with given id")
+                            },
+                            parameters = {
+                                    @Parameter(in = ParameterIn.PATH, name = "id")
+                            }
+                    )
+            ),
+            @RouterOperation(
+                    path = "/api/v1/student",
+                    produces = {
+                            MediaType.APPLICATION_JSON_VALUE
+                    },
+                    method = RequestMethod.POST,
+                    beanClass = StudenHandler.class,
+                    beanMethod = "save",
+                    operation = @Operation(
+                            operationId = "save",
+                            responses = {
+                                    @ApiResponse(
+                                            responseCode = "200",
+                                            description = "successful",
+                                            content = @Content(schema = @Schema(
+                                                    implementation = Student.class
+                                            ))
+                                    )
+                            },
+                            requestBody = @RequestBody(
+                                    content = @Content(schema = @Schema(
+                                            implementation = Student.class
+                                    ))
+                            )
+
+                    )
+            )
+
+    })
+
+    public RouterFunction<ServerResponse> studentRoutes(StudenHandler handler) {
         return RouterFunctions.route(RequestPredicates.GET(uri), handler::findAll)
                 .andRoute(RequestPredicates.GET(uri.concat("/{id}")), handler::findById)
                 .andRoute(RequestPredicates.POST(uri), handler::save)
