@@ -25,6 +25,7 @@ public class StudentRouter {
     String uri = "api/v1/student";
 
     @Bean
+
     @RouterOperations({
             @RouterOperation(
                     path = "/api/v1/student",
@@ -42,8 +43,7 @@ public class StudentRouter {
                                             description = "successful",
                                             content = @Content(schema = @Schema(
                                                     implementation = Student.class
-                                            ))
-                                    )
+                                            )))
                             }
                     )
             ),
@@ -63,14 +63,12 @@ public class StudentRouter {
                                             description = "successful",
                                             content = @Content(schema = @Schema(
                                                     implementation = Student.class
-                                            ))
-                                    ),
-                                    @ApiResponse(responseCode = "404", description = "customer not found with given id")
+                                            ))),
+                                    @ApiResponse(responseCode = "404", description = "Not found")
                             },
                             parameters = {
                                     @Parameter(in = ParameterIn.PATH, name = "id")
-                            }
-                    )
+                            })
             ),
             @RouterOperation(
                     path = "/api/v1/student",
@@ -95,11 +93,55 @@ public class StudentRouter {
                                     content = @Content(schema = @Schema(
                                             implementation = Student.class
                                     ))
-                            )
+                            ))
+            ),
+            @RouterOperation(
+                    path = "/api/v1/student/{id}",
+                    produces = {
+                            MediaType.APPLICATION_JSON_VALUE
+                    },
+                    method = RequestMethod.PUT,
+                    beanClass = StudenHandler.class,
+                    beanMethod = "update",
+                    operation = @Operation(
+                            operationId = "update",
+                            responses = {
+                                    @ApiResponse(
+                                            responseCode = "200",
+                                            description = "successful",
+                                            content = @Content(schema = @Schema(
+                                                    implementation = Student.class
+                                            )))
+                            },
+                            requestBody = @RequestBody(
+                                    content = @Content(schema = @Schema(
+                                            implementation = Student.class
+                                    ))
+                            ),
+                            parameters = {
+                                    @Parameter(in = ParameterIn.PATH, name = "id")
+                            }
 
                     )
-            )
 
+            ),
+            @RouterOperation(path = "/api/v1/student/{id}",
+                    produces = {
+                            MediaType.APPLICATION_JSON_VALUE
+                    },
+                    method = RequestMethod.DELETE,
+                    beanClass = StudenHandler.class,
+                    beanMethod = "delete",
+                    operation = @Operation(operationId = "delete",
+                            responses = {
+                                    @ApiResponse(responseCode = "204", description = "No content"),
+                                    @ApiResponse(responseCode = "404", description = "Not found")
+                            },
+                            parameters = {
+                                    @Parameter(in = ParameterIn.PATH, name = "id")
+                            }
+                    )
+            )
     })
 
     public RouterFunction<ServerResponse> studentRoutes(StudenHandler handler) {
