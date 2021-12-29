@@ -15,20 +15,20 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
 @Component
-public class StudenHandler implements IOperations{
+public class StudenHandler implements IOperations {
 
     @Autowired
     private StudentService service;
 
     @Override
-    public Mono<ServerResponse> findAll(ServerRequest request) {
+    public Mono<ServerResponse> findAll(final ServerRequest request) {
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                 .body(this.service.findAll(), Student.class)
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     @Override
-    public Mono<ServerResponse> findById(ServerRequest request) {
+    public Mono<ServerResponse> findById(final ServerRequest request) {
         return this.service.findById(request.pathVariable("id"))
                 .flatMap(student -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
@@ -37,7 +37,7 @@ public class StudenHandler implements IOperations{
     }
 
     @Override
-    public Mono<ServerResponse> save(ServerRequest request) {
+    public Mono<ServerResponse> save(final ServerRequest request) {
         Mono<Student> studentMono = request.bodyToMono(Student.class);
         return studentMono.flatMap(student -> this.service.save(student)
                 .flatMap(studentdb -> ServerResponse
@@ -47,20 +47,23 @@ public class StudenHandler implements IOperations{
     }
 
     @Override
-    public Mono<ServerResponse> update(ServerRequest request) {
+    public Mono<ServerResponse> update(final ServerRequest request) {
         Mono<Student> studentMono = request.bodyToMono(Student.class);
         String id = request.pathVariable("id");
 
-        return this.service.findById(id)
-                .flatMap(s -> studentMono.flatMap(student -> this.service.update(id, student)
-                        .flatMap(studentdb -> ServerResponse.status(HttpStatus.CREATED)
-                                .contentType(APPLICATION_JSON)
-                                .body(fromValue(studentdb)))))
+         return this.service.findById(id)
+                .flatMap(s -> studentMono
+                        .flatMap(student -> this.service.update(id, student)
+                                .flatMap(studentdb -> ServerResponse
+                                        .status(HttpStatus.CREATED)
+                                        .contentType(APPLICATION_JSON)
+                                        .body(fromValue(studentdb)))))
                 .switchIfEmpty(ServerResponse.notFound().build());
+
     }
 
     @Override
-    public Mono<ServerResponse> delete(ServerRequest request) {
+    public Mono<ServerResponse> delete(final ServerRequest request) {
         String id = request.pathVariable("id");
 
         return this.service.findById(id)

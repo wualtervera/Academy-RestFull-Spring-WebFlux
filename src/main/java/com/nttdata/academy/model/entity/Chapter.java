@@ -6,8 +6,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Data
 @AllArgsConstructor
+@Data
 @NoArgsConstructor
 public class Chapter {
     private String id;
