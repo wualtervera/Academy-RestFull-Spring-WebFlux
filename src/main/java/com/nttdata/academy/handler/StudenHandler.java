@@ -51,14 +51,22 @@ public class StudenHandler implements IOperations {
         Mono<Student> studentMono = request.bodyToMono(Student.class);
         String id = request.pathVariable("id");
 
-         return this.service.findById(id)
+         /*return this.service.findById(id)
                 .flatMap(s -> studentMono
                         .flatMap(student -> this.service.update(id, student)
                                 .flatMap(studentdb -> ServerResponse
                                         .status(HttpStatus.CREATED)
                                         .contentType(APPLICATION_JSON)
                                         .body(fromValue(studentdb)))))
-                .switchIfEmpty(ServerResponse.notFound().build());
+                .switchIfEmpty(ServerResponse.notFound().build());*/
+
+        //solo para test
+        return studentMono.flatMap(student ->
+                this.service.update(id, student)
+                        .flatMap(studentdb -> ServerResponse
+                                .status(HttpStatus.CREATED)
+                                .contentType(APPLICATION_JSON)
+                                .body(fromValue(studentdb))));
 
     }
 
@@ -66,9 +74,13 @@ public class StudenHandler implements IOperations {
     public Mono<ServerResponse> delete(final ServerRequest request) {
         String id = request.pathVariable("id");
 
-        return this.service.findById(id)
+        /*return this.service.findById(id)
                 .flatMap(student -> this.service.delete(id)
                         .then(ServerResponse.noContent().build()))
-                .switchIfEmpty(ServerResponse.notFound().build());
+                .switchIfEmpty(ServerResponse.notFound().build());*/
+
+        //solo para test
+        return this.service.delete(id)
+                .then(ServerResponse.noContent().build());
     }
 }

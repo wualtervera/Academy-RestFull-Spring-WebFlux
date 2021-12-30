@@ -20,7 +20,6 @@ import java.util.Map;
 @Order(-2)
 public class ErrorExceptionHandler extends AbstractErrorWebExceptionHandler {
 
-
     public ErrorExceptionHandler(ErrorAttributes errorAttributes,
                                  ApplicationContext applicationContext,
                                  ServerCodecConfigurer serverCodecConfigurer) {
@@ -43,6 +42,5 @@ public class ErrorExceptionHandler extends AbstractErrorWebExceptionHandler {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(errorPropertiesMap));
     }
-
 
 }

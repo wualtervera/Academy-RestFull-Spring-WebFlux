@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -87,27 +88,26 @@ public class StudenHandlerTest {
     @Test
     void update() {
 
-        /*Mono<Student> studentMono = Mono.just(s1);
+        Mono<Student> studentMono = Mono.just(s1);
         when(this.service.update(s1.getId(), s1)).thenReturn(studentMono);
 
-        webTestClient.put().uri(uri.concat("/61c146f39a746217024a9e59"))
+        webTestClient.put().uri(uri.concat("/{id}"), s1.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .body(Mono.just(s1), Student.class)
                 .exchange()
-                .expectStatus().isCreated();*/
+                .expectStatus().isCreated();
     }
 
     @Test
     void delete() {
         //given(this.service.delete(any())).willReturn(Mono.empty());
 
-
-        /*Mono<Void> voidReturn = Mono.empty();
+        Mono<Void> voidReturn = Mono.empty();
         when(this.service.delete(s1.getId())).thenReturn(voidReturn);
 
-        webTestClient.delete().uri(uri.concat("/61c146f39a746217024a9e59"))
+        webTestClient.delete().uri(uri.concat("/{id}"), s1.getId())
                 .exchange()
-                .expectStatus().isNoContent();*/
+                .expectStatus().isNoContent();
 
     }
 }
