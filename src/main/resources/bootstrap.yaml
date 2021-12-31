@@ -5,3 +5,9 @@ spring:
     mongodb:
       database: academy
       uri: mongodb://localhost:27017
+
+management:
+  endpoints:
+    web:
+      exposure:
+        exclude: "*"
